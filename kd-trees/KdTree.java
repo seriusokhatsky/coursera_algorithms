@@ -13,7 +13,6 @@ public class KdTree {
 	private Node chemp;
 
 	private double minDist;
-	private double neighDist;
 
 	// construct an empty set of points 
 	public KdTree() {
@@ -24,7 +23,7 @@ public class KdTree {
 
 	// is the set empty? 
 	public boolean isEmpty() {
-		return root == null;
+		return size() == 0;
 	}
 
 
@@ -113,7 +112,7 @@ public class KdTree {
 
 		Node find = new Node(p);
 
-		contains = has(root, find);
+		if( ! isEmpty() ) contains = has(root, find);
 
 		return contains;
 	}
@@ -230,7 +229,7 @@ public class KdTree {
 	public Iterable<Point2D> range(RectHV rect) {
 		Stack<Point2D> range = new Stack<Point2D>();
 
-		range = rangeSearch( root, rect, range );
+		if( ! isEmpty() ) range = rangeSearch( root, rect, range );
 
 		return range;
 	}
@@ -246,7 +245,7 @@ public class KdTree {
 			range = rangeSearch( node.left, rect, range );
 		}
 
-		// Go right. If rectangle intersect with left node rectangle
+		// Go right. If rectangle intersect with right node rectangle
 
 		if( node.right != null && rect.intersects( node.right.rect ) ) {
 			range = rangeSearch( node.right, rect, range );
@@ -260,6 +259,10 @@ public class KdTree {
 	// a nearest neighbor in the set to point p; null if the set is empty 
 	public Point2D nearest(Point2D p) {
 
+		Point2D point = null;
+
+		if( isEmpty() ) return point;
+
 		chemp = null;
 		// it = 0;
 		minDist = root.point.distanceTo(p);
@@ -268,7 +271,9 @@ public class KdTree {
 
 		if( chemp == null ) chemp = root;
 
-		return chemp.point;
+		point = chemp.point;
+
+		return point;
 	}
 
 
